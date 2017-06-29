@@ -124,7 +124,7 @@ class AppContainer extends Component {
   render() {
 
     return (
-      <div>
+      <div style={{padding: "100px"}}>
       There are {this.state.geese} geese being hunted
     </div>
 
