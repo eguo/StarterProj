@@ -22,7 +22,7 @@ class AppContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      geese: 0
     }
     this.ipfsApi = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: "https"});
 
@@ -53,7 +53,8 @@ class AppContainer extends Component {
         } else {
           this.setState({accounts: accs});
           gooseHunterContract.numGeese((cerr, succ)=> {
-            console.log('succ', parseInt(succ, 10));
+            var num = parseInt(succ, 10);
+            this.setState({geese: num});
 
 
           });
@@ -124,7 +125,7 @@ class AppContainer extends Component {
 
     return (
       <div>
-      hello world!
+      There are {this.state.geese} geese being hunted
     </div>
 
     )
