@@ -6,7 +6,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io
 
 
 const json = require('../../../contracts.json');
-const rinkebyAdd = '0x7389e3495d723772c22b6ca480385f7fbef3bc38';
+const rinkebyAdd = '0xc43027004853f8cfc982af3bc8eb2726aea4925a';
 
 const gooseHunterContract = web3.eth.contract(json.GooseHunter).at(rinkebyAdd);
 
@@ -22,7 +22,7 @@ class AppContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      geese: 0
+      gooseHunters: 0
     }
     this.ipfsApi = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: "https"});
 
@@ -34,6 +34,8 @@ class AppContainer extends Component {
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.arrayBufferToString = this.arrayBufferToString.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    this.handleAddHunter = this.handleAddHunter.bind(this);
 
     this.getInitialData();
     //this.handleSendMeta = this.handleSendMeta.bind(this)
@@ -52,9 +54,11 @@ class AppContainer extends Component {
           console.log ('error fetching accounts', err);
         } else {
           this.setState({accounts: accs});
-          gooseHunterContract.numGeese((cerr, succ)=> {
+
+
+          gooseHunterContract.numGooseHunters((cerr, succ)=> {
             var num = parseInt(succ, 10);
-            this.setState({geese: num});
+            this.setState({gooseHunters: num});
 
 
           });
@@ -121,12 +125,37 @@ class AppContainer extends Component {
     event.preventDefault()
   }
 
+
+  handleAddHunter(evt){
+    evt.preventDefault();
+
+    var name = evt.target.hunter.value;
+
+    console.log('hunter', hunter);
+
+    gooseHunterContract.register({from: this.state.accounts[0]}, (cerr, succ)=> {
+      console.log('succ');
+    });
+
+
+  }
+
   render() {
 
     return (
       <div style={{padding: "100px"}}>
-      There are {this.state.geese} geese being hunted
-    </div>
+        There are {this.state.gooseHunters} hunters
+
+
+        <form className='AddProject' onSubmit={this.handleAddHunter} style={{backgroundColor: "rgba(10, 22, 40, 0.5)", padding: "15px", color: "white"}}>
+        <label style={{fontSize: "12px"}} htmlFor='contract_title'>Add Hunter</label>
+        <input id='hunter' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} />
+
+        <button type='submit' className='AddBtn' style={{backgroundColor: "rgba(255, 255, 255, 0.18)", border:"0px"}}>Add</button>
+
+        </form>
+
+      </div>
 
     )
   }
