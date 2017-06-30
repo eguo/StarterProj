@@ -100,6 +100,8 @@ class AppContainer extends Component {
     const file = event.target.files[0]
       this.setState({resumeFileName: file.name});
 
+      console.log('state', this.state.resumeFileName);
+
 
     let reader = new window.FileReader()
     reader.onloadend = () => this.saveToIpfs(reader, "source")
@@ -144,7 +146,7 @@ class AppContainer extends Component {
     ipfs.addJSON({name: name, program: program, license: license, resumeFileName: this.state.resumeFileName, resumeFileHash: this.state.resumeFileHash}, (cerr, result) => {
       console.log(result);
       hash = result;
-
+      console.log('added', {name: name, program: program, license: license, resumeFileName: this.state.resumeFileName, resumeFileHash: this.state.resumeFileHash});
       gooseHunterContract.register(hash, {from: this.state.accounts[0]}, (cerr, succ)=> {
         console.log('succ');
       });
@@ -190,7 +192,7 @@ class AppContainer extends Component {
         <input id='license' className='SendAmount' type='text' ref={(i) => { if(i) { this.license = i}}} style={{display: "block", margin: "15px"}}/>
 
         <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Resume</label>
-        <input id='invariants_code' type="file" onChange={this.props.handleCaptureFile} style={{ display: "block", border: "1px solid white", color: "white"}}/>
+        <input id='invariants_code' type="file" onChange={this.captureFile} style={{ display: "block", border: "1px solid white", color: "white"}}/>
 
         <button type='submit' className='AddBtn' style={{backgroundColor: "rgba(255, 255, 255, 0.18)", border:"0px"}}>Add</button>
 
