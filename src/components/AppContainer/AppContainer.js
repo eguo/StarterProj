@@ -31,7 +31,6 @@ class AppContainer extends Component {
 
     //ipfs methods
     this.captureFile = this.captureFile.bind(this);
-    this.captureFileInvariants = this.captureFileInvariants.bind(this);
     this.saveToIpfs = this.saveToIpfs.bind(this);
     this.arrayBufferToString = this.arrayBufferToString.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -66,7 +65,7 @@ class AppContainer extends Component {
               gooseHunterContract.getHunter(i, (cerr, succ)=> {
                 console.log('success', succ[1]);
                 ipfs.catJSON(succ[1], (err, res)=> {
-                  var hunter = {address: succ[0], name: res.name, license: res.license, program: res.program};
+                  var hunter = {address: succ[0], name: res.name, license: res.license, program: res.program, resumeFileName: res.resumeFileName, resumeFileHash: res.resumeFileHash};
 
                   hunters.push(hunter);
 
@@ -99,22 +98,11 @@ class AppContainer extends Component {
     event.stopPropagation()
     event.preventDefault()
     const file = event.target.files[0]
-      this.setState({sourceFileName: file.name});
+      this.setState({resumeFileName: file.name});
 
 
     let reader = new window.FileReader()
     reader.onloadend = () => this.saveToIpfs(reader, "source")
-    reader.readAsArrayBuffer(file)
-  }
-  captureFileInvariants (event) {
-    event.stopPropagation()
-    event.preventDefault()
-    const file = event.target.files[0]
-
-      this.setState({invariantsFileName: file.name});
-
-    let reader = new window.FileReader()
-    reader.onloadend = () => this.saveToIpfs(reader, "invariants")
     reader.readAsArrayBuffer(file)
   }
 
@@ -128,9 +116,7 @@ class AppContainer extends Component {
       ipfsId = response[0].hash
       console.log(ipfsId)
       if (contract == "source"){
-        this.setState({sourceFileHash: ipfsId})
-      } else {
-        this.setState({invariantsFileHash: ipfsId})
+        this.setState({resumeFileHash: ipfsId})
       }
 
     }).catch((err) => {
@@ -154,10 +140,10 @@ class AppContainer extends Component {
     var program = evt.target.program.value;
     var license = evt.target.license.value;
     var hash = "";
-    ipfs.addJSON({name: name, program: program, license: license}, (cerr, result) => {
+
+    ipfs.addJSON({name: name, program: program, license: license, resumeFileName: this.state.resumeFileName, resumeFileHash: this.state.resumeFileHash}, (cerr, result) => {
       console.log(result);
       hash = result;
-      console.log('hunter', hunter);
 
       gooseHunterContract.register(hash, {from: this.state.accounts[0]}, (cerr, succ)=> {
         console.log('succ');
@@ -181,6 +167,7 @@ class AppContainer extends Component {
             <p style={{width: "100%"}}>Address:  {hunter.address}</p>
             <p style={{width: "100%"}}>Program:  {hunter.program}</p>
             <p style={{width: "100%"}}>License:  {hunter.license}</p>
+            <p> Resume:<a href={"https://ipfs.infura.io/"+hunter.resumeFileHash}>  {hunter.resumeFileName} </a> </p>
           </div>
         );
       })}
@@ -201,6 +188,9 @@ class AppContainer extends Component {
         <input id='program' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} style={{display: "block", margin: "15px"}}/>
         <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Hunting License</label>
         <input id='license' className='SendAmount' type='text' ref={(i) => { if(i) { this.license = i}}} style={{display: "block", margin: "15px"}}/>
+
+        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Resume</label>
+        <input id='invariants_code' type="file" onChange={this.props.handleCaptureFile} style={{ display: "block", border: "1px solid white", color: "white"}}/>
 
         <button type='submit' className='AddBtn' style={{backgroundColor: "rgba(255, 255, 255, 0.18)", border:"0px"}}>Add</button>
 
