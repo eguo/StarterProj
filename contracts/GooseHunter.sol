@@ -3,10 +3,25 @@ pragma solidity ^0.4.11;
 
 contract GooseHunter {
 
+    struct Goose {
+        bool beingHunted;
+        string data;
 
-    uint public numGeese;
+    }
+
+    address[] public gooseHunters;
+    uint public numGooseHunters;
 
     function GooseHunter() {
-        numGeese = 42;
+
     }
+
+    function register(){
+        gooseHunters.push(msg.sender);
+        numGooseHunters++;
+    }
+
+
+
+
 }

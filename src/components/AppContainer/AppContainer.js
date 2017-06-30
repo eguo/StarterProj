@@ -68,6 +68,7 @@ class AppContainer extends Component {
 
                 if (hunters.length == num){
                   this.setState({gooseHunters: hunters});
+                  console.log("hunters", hunters);
                 }
 
 
@@ -155,20 +156,33 @@ class AppContainer extends Component {
   }
 
   render() {
+    var hunters = (
+      <div>
+      <h4>Goose Hunters</h4>
+
+      {this.state.gooseHunters.map((hunter)=>{
+        return (
+          <div style={{padding: "15px"}}>
+            {hunter}
+          </div>
+        );
+      })}
+    </div>
+  );
 
     return (
       <div style={{padding: "100px"}}>
-        There are {this.state.gooseHunters} hunters
+        <h4>There are {this.state.numGooseHunters} hunters</h4>
 
 
-        <form className='AddProject' onSubmit={this.handleAddHunter} style={{backgroundColor: "rgba(10, 22, 40, 0.5)", padding: "15px", color: "white"}}>
-        <label style={{fontSize: "12px"}} htmlFor='contract_title'>Add Hunter</label>
-        <input id='hunter' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} />
+        <form className='AddProject' onSubmit={this.handleAddHunter} style={{backgroundColor: "rgba(10, 22, 40, 0.5)", padding: "15px", color: "white", width: "20%"}}>
+        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Add Hunter</label>
+        <input id='hunter' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} style={{display: "block", margin: "15px"}}/>
 
         <button type='submit' className='AddBtn' style={{backgroundColor: "rgba(255, 255, 255, 0.18)", border:"0px"}}>Add</button>
 
         </form>
-
+        {hunters}
       </div>
 
     )
