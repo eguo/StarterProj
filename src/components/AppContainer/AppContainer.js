@@ -22,7 +22,8 @@ class AppContainer extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      gooseHunters: 0
+      numGooseHunters: 0,
+      gooseHunters: []
     }
     this.ipfsApi = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: "https"});
 
@@ -58,7 +59,20 @@ class AppContainer extends Component {
 
           gooseHunterContract.numGooseHunters((cerr, succ)=> {
             var num = parseInt(succ, 10);
-            this.setState({gooseHunters: num});
+            this.setState({numGooseHunters: num});
+            var hunters = [];
+
+            for (var i = 0; i < num; i++){
+              gooseHunterContract.gooseHunters(i, (cerr, succ)=> {
+                hunters.push(succ);
+
+                if (hunters.length == num){
+                  this.setState({gooseHunters: hunters});
+                }
+
+
+              });
+            }
 
 
           });
