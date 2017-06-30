@@ -6,7 +6,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io
 
 
 const json = require('../../../contracts.json');
-const rinkebyAdd = '0xc43027004853f8cfc982af3bc8eb2726aea4925a';
+const rinkebyAdd = '0x5038ffee328ee9bcad9dc3ba418ae6827c3b7766';
 
 const gooseHunterContract = web3.eth.contract(json.GooseHunter).at(rinkebyAdd);
 
@@ -64,7 +64,8 @@ class AppContainer extends Component {
 
             for (var i = 0; i < num; i++){
               gooseHunterContract.gooseHunters(i, (cerr, succ)=> {
-                hunters.push(succ);
+                var hunter = {address: succ[0], name: succ[1]};
+                hunters.push(hunter);
 
                 if (hunters.length == num){
                   this.setState({gooseHunters: hunters});
@@ -148,7 +149,7 @@ class AppContainer extends Component {
 
     console.log('hunter', hunter);
 
-    gooseHunterContract.register({from: this.state.accounts[0]}, (cerr, succ)=> {
+    gooseHunterContract.register(name, {from: this.state.accounts[0]}, (cerr, succ)=> {
       console.log('succ');
     });
 
@@ -160,10 +161,10 @@ class AppContainer extends Component {
       <div>
       <h4>Goose Hunters</h4>
 
-      {this.state.gooseHunters.map((hunter)=>{
+      {this.state.gooseHunters.map((hunter, i)=>{
         return (
-          <div style={{padding: "15px"}}>
-            {hunter}
+          <div style={{padding: "15px"}} key={i}>
+            {hunter.address}, {hunter.name}
           </div>
         );
       })}

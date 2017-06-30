@@ -1,4 +1,4 @@
 {"GooseHunter":
-  [{"constant":false,"inputs":[],"name":"register","outputs":[],"payable":false,"type":"function"},{"constant":true,"inputs":[],"name":"numGooseHunters","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"gooseHunters","outputs":[{"name":"","type":"address"}],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}]
+  [{"constant":true,"inputs":[],"name":"numGooseHunters","outputs":[{"name":"","type":"uint256"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"gooseHunters","outputs":[{"name":"hunter","type":"address"},{"name":"data","type":"string"}],"payable":false,"type":"function"},{"constant":true,"inputs":[{"name":"hunterId","type":"uint256"}],"name":"getHunter","outputs":[{"name":"","type":"address"},{"name":"","type":"string"}],"payable":false,"type":"function"},{"constant":false,"inputs":[{"name":"data","type":"string"}],"name":"register","outputs":[],"payable":false,"type":"function"},{"inputs":[],"payable":false,"type":"constructor"}]
 
 }
