@@ -6,7 +6,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io
 
 
 const json = require('../../../contracts.json');
-const rinkebyAdd = '0x5038ffee328ee9bcad9dc3ba418ae6827c3b7766';
+const rinkebyAdd = '0xbc99a86126b18810e8ac4a0d40315cc99f3ff6f2';
 
 const gooseHunterContract = web3.eth.contract(json.GooseHunter).at(rinkebyAdd);
 
@@ -63,14 +63,19 @@ class AppContainer extends Component {
             var hunters = [];
 
             for (var i = 0; i < num; i++){
-              gooseHunterContract.gooseHunters(i, (cerr, succ)=> {
-                var hunter = {address: succ[0], name: succ[1]};
-                hunters.push(hunter);
+              gooseHunterContract.getHunter(i, (cerr, succ)=> {
+                console.log('success', succ[1]);
+                ipfs.catJSON(succ[1], (err, res)=> {
+                  var hunter = {address: succ[0], name: res.name, license: res.license, program: res.program};
 
-                if (hunters.length == num){
-                  this.setState({gooseHunters: hunters});
-                  console.log("hunters", hunters);
-                }
+                  hunters.push(hunter);
+
+                  if (hunters.length == num){
+                    this.setState({gooseHunters: hunters});
+                    console.log("hunters", hunters);
+                  }
+                });
+
 
 
               });
@@ -146,12 +151,20 @@ class AppContainer extends Component {
     evt.preventDefault();
 
     var name = evt.target.hunter.value;
+    var program = evt.target.program.value;
+    var license = evt.target.license.value;
+    var hash = "";
+    ipfs.addJSON({name: name, program: program, license: license}, (cerr, result) => {
+      console.log(result);
+      hash = result;
+      console.log('hunter', hunter);
 
-    console.log('hunter', hunter);
-
-    gooseHunterContract.register(name, {from: this.state.accounts[0]}, (cerr, succ)=> {
-      console.log('succ');
+      gooseHunterContract.register(hash, {from: this.state.accounts[0]}, (cerr, succ)=> {
+        console.log('succ');
+      });
     });
+
+
 
 
   }
@@ -173,12 +186,18 @@ class AppContainer extends Component {
 
     return (
       <div style={{padding: "100px"}}>
+      <h1> Goose Hunter Registry </h1>
         <h4>There are {this.state.numGooseHunters} hunters</h4>
 
 
         <form className='AddProject' onSubmit={this.handleAddHunter} style={{backgroundColor: "rgba(10, 22, 40, 0.5)", padding: "15px", color: "white", width: "20%"}}>
-        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Add Hunter</label>
+        <h4> Add a Hunter < /h4>
+        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Hunter Name</label>
         <input id='hunter' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} style={{display: "block", margin: "15px"}}/>
+        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Hunters Program</label>
+        <input id='program' className='SendAmount' type='text' ref={(i) => { if(i) { this.hunter = i}}} style={{display: "block", margin: "15px"}}/>
+        <label style={{fontSize: "12px", display: "block", margin: "15px"}} htmlFor='contract_title'>Hunting License</label>
+        <input id='license' className='SendAmount' type='text' ref={(i) => { if(i) { this.license = i}}} style={{display: "block", margin: "15px"}}/>
 
         <button type='submit' className='AddBtn' style={{backgroundColor: "rgba(255, 255, 255, 0.18)", border:"0px"}}>Add</button>
 
