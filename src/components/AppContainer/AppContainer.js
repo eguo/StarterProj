@@ -6,7 +6,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io
 
 
 const json = require('../../../contracts.json');
-const rinkebyAdd = '0xbc99a86126b18810e8ac4a0d40315cc99f3ff6f2';
+const rinkebyAdd = '0xc2acd7af15b40a84f62d78d32e3a85d627146543';
 
 const gooseHunterContract = web3.eth.contract(json.GooseHunter).at(rinkebyAdd);
 
@@ -177,7 +177,10 @@ class AppContainer extends Component {
       {this.state.gooseHunters.map((hunter, i)=>{
         return (
           <div style={{padding: "15px"}} key={i}>
-            {hunter.address}, {hunter.name}
+            <p style={{width: "100%"}}>Name:  {hunter.name}</p>
+            <p style={{width: "100%"}}>Address:  {hunter.address}</p>
+            <p style={{width: "100%"}}>Program:  {hunter.program}</p>
+            <p style={{width: "100%"}}>License:  {hunter.license}</p>
           </div>
         );
       })}
