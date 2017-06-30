@@ -169,7 +169,7 @@ class AppContainer extends Component {
             <p style={{width: "100%"}}>Address:  {hunter.address}</p>
             <p style={{width: "100%"}}>Program:  {hunter.program}</p>
             <p style={{width: "100%"}}>License:  {hunter.license}</p>
-            <p> Resume:<a href={"https://ipfs.infura.io/"+hunter.resumeFileHash}>  {hunter.resumeFileName} </a> </p>
+            <p> Resume:<a href={"https://ipfs.infura.io/ipfs/"+hunter.resumeFileHash} download>  {hunter.resumeFileName} </a> </p>
           </div>
         );
       })}
